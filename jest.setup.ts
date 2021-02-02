@@ -45,6 +45,10 @@ jest.doMock('react-native', () => {
           useEmulator: jest.fn(),
         },
         RNFBCrashlyticsModule: {},
+        RNFBDatabaseModule: {
+          on: jest.fn(),
+          useEmulator: jest.fn(),
+        },
         RNFBPerfModule: {},
       },
     },

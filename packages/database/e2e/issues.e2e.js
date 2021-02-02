@@ -38,7 +38,7 @@ describe('database issues', function () {
     const testRef = firebase
       .database()
       .ref()
-      .child('/test')
+      .child(TEST_PATH)
       .orderByChild('disabled')
       .equalTo(false);
 

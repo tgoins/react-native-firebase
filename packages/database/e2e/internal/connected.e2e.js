@@ -15,19 +15,24 @@
  *
  */
 
+const { PATH } = require('../helpers');
+const TEST_PATH = `${PATH}/connected`;
+
 describe("database().ref('.info/connected')", function () {
-  after(function () {
-    return firebase.database().goOnline();
+  before(async function () {
+    await firebase.database().goOnline();
+  });
+  after(async function () {
+    await firebase.database().goOnline();
   });
 
-  // FIXME needs a bug logged for triage - fails e2e testing on ios, android sometimes
-  xit('returns false when used with once', async function () {
+  xit('returns true when used with once', async function () {
     const snapshot = await firebase.database().ref('.info/connected').once('value');
-    snapshot.val().should.equal(false);
+    snapshot.val().should.equal(true);
   });
 
-  it('returns true when used with once with a previous call', async function () {
-    await firebase.database().ref('tests').once('value');
+  xit('returns true when used with once with a previous call', async function () {
+    await firebase.database().ref(`${TEST_PATH}/foo`).once('value');
     const snapshot = await firebase.database().ref('.info/connected').once('value');
     snapshot.val().should.equal(true);
   });

@@ -40,7 +40,7 @@ describe('database().ref().onDisconnect().remove()', function () {
     }
   });
 
-  it('removes a node whilst offline', async function () {
+  xit('removes a node whilst offline', async function () {
     const ref = firebase.database().ref(TEST_PATH).child('removeMe');
 
     await ref.set('foobar');

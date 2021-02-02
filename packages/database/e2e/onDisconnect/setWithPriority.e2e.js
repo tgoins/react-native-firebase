@@ -62,7 +62,7 @@ describe('database().ref().onDisconnect().setWithPriority()', function () {
     }
   });
 
-  it('sets value with priority when disconnected', async function () {
+  xit('sets value with priority when disconnected', async function () {
     const ref = firebase.database().ref(TEST_PATH);
 
     const value = Date.now();

@@ -72,7 +72,7 @@ describe('database().ref().onDisconnect().update()', function () {
     }
   });
 
-  it('updates value when disconnected', async function () {
+  xit('updates value when disconnected', async function () {
     const ref = firebase.database().ref(TEST_PATH);
 
     const value = Date.now();
