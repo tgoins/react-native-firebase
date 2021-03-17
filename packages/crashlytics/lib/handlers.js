@@ -15,9 +15,12 @@
  *
  */
 
+import { firebase } from '@react-native-firebase/app';
 import { isError, once } from '@react-native-firebase/app/lib/common';
 import tracking from 'promise/setimmediate/rejection-tracking';
 import StackTrace from 'stacktrace-js';
+
+export const FATAL_FLAG = 'com.firebase.crashlytics.reactnative.fatal';
 
 export function createNativeErrorObj(error, stackFrames, isUnhandledRejection, jsErrorName) {
   const nativeObj = {};
@@ -78,6 +81,27 @@ export const setGlobalErrorHandler = once(nativeModule => {
     if (nativeModule.isErrorGenerationOnJSCrashEnabled) {
       try {
         const stackFrames = await StackTrace.fromError(error, { offline: true });
+
+        // Flag the Crashlytics backend that we have a fatal error, they will transform it
+        // Roughly analogous to provided Swift example `Int(Date().timeIntervalSince1970) + 1`
+        await nativeModule.setAttribute(FATAL_FLAG, Math.round(new Date() / 1000) + '');
+
+        // Notify analytics, if it exists - throws error if not
+        try {
+          await firebase
+            .app()
+            .analytics()
+            .logEvent(
+              '_ae', // '_ae' is a reserved analytics key for app exceptions
+              {
+                fatal: 1, // as in firebase-android-sdk
+                timestamp: Date.now() + '', // firebase-android-sdk example:java.util.Date.getTime().toString()
+              },
+            );
+        } catch (_) {
+          // This just means analytics was not present, so we could not log the analytics event
+        }
+
         await nativeModule.recordErrorPromise(createNativeErrorObj(error, stackFrames, false));
       } catch (_) {
         // do nothing
